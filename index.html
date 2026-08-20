@@ -1,0 +1,666 @@
+<!doctype html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width,initial-scale=1">
+<title>Best Dress Voting</title>
+
+<style>
+:root{
+  --bg:#f7f4ef;
+  --card:#fff;
+  --text:#27231f;
+  --muted:#7b736b;
+  --accent:#8b5cf6;
+  --accent2:#ec4899;
+  --line:#e9e2da
+}
+
+*{
+  box-sizing:border-box
+}
+
+body{
+  margin:0;
+  background:var(--bg);
+  color:var(--text);
+  font-family:system-ui,-apple-system,Segoe UI,sans-serif
+}
+
+.wrap{
+  max-width:520px;
+  margin:auto;
+  padding:28px 18px 42px
+}
+
+.hero{
+  text-align:center;
+  margin-bottom:22px
+}
+
+.badge{
+  display:inline-block;
+  padding:6px 12px;
+  border-radius:999px;
+  background:#fce2d6;
+  color:#ec7035;
+  font-weight:700;
+  font-size:12px;
+  letter-spacing:.04em
+}
+
+h1{
+  font-size:32px;
+  margin:12px 0 5px
+}
+
+.sub{
+  color:var(--muted);
+  margin:0
+}
+
+.card{
+  background:var(--card);
+  border:1px solid var(--line);
+  border-radius:22px;
+  padding:20px;
+  margin:14px 0;
+  box-shadow:0 8px 24px #00000008
+}
+
+h2{
+  font-size:19px;
+  margin:0 0 13px
+}
+
+.search{
+  width:100%;
+  padding:13px 14px;
+  border:1px solid var(--line);
+  border-radius:13px;
+  font-size:16px;
+  outline:none
+}
+
+.search:focus{
+  border-color:var(--accent)
+}
+
+.results{
+  margin-top:8px;
+  max-height:210px;
+  overflow:auto
+}
+
+.name{
+  display:block;
+  width:100%;
+  text-align:left;
+  padding:12px 10px;
+  border:0;
+  background:white;
+  border-bottom:1px solid #f1ece7;
+  font-size:15px;
+  cursor:pointer;
+  border-radius:10px
+}
+
+.name:hover{
+  background:#f7f2ff
+}
+
+.name.selected{
+  background:#efe7ff;
+  font-weight:700;
+  color:#6d28d9
+}
+
+.selectedBox{
+  margin-top:10px;
+  min-height:20px;
+  color:var(--muted);
+  font-size:14px
+}
+
+.selectedBox strong{
+  color:var(--text)
+}
+
+button.submit{
+  width:100%;
+  margin-top:8px;
+  padding:15px;
+  border:0;
+  border-radius:14px;
+  background:linear-gradient(90deg,var(--accent),var(--accent2));
+  color:#fff;
+  font-weight:800;
+  font-size:16px;
+  cursor:pointer
+}
+
+button.submit:disabled{
+  opacity:.45;
+  cursor:not-allowed
+}
+
+.note{
+  font-size:12px;
+  color:var(--muted);
+  text-align:center;
+  margin-top:14px
+}
+
+.success{
+  display:none;
+  text-align:center;
+  padding:30px 8px
+}
+
+.success .emoji{
+  font-size:52px
+}
+
+.success h2{
+  font-size:25px
+}
+
+.loading{
+  text-align:center;
+  color:var(--muted);
+  padding:15px 5px;
+  font-size:14px
+}
+
+.empty{
+  text-align:center;
+  color:var(--muted);
+  padding:15px 5px;
+  font-size:14px
+}
+
+.already-voted{
+  display:none;
+  text-align:center;
+  padding:30px 8px
+}
+
+.already-voted .emoji{
+  font-size:52px
+}
+
+.already-voted h2{
+  font-size:25px
+}
+</style>
+</head>
+
+<body>
+
+<div class="wrap">
+
+  <div class="hero">
+    <span class="badge">🏆 BEST DRESS CODE AWARD</span>
+    <h1>Orangers Fun Walk & Games 2026 🍊</h1>
+    <p class="sub"><i>Siapa yang menurut Anda tampil paling standout hari ini? Pilih nama peserta dengan dresscode paling keren versi Anda! 🧡</i></p>
+  </div>
+
+
+  <!-- =========================
+       VOTING FORM
+  ========================= -->
+
+  <div id="form">
+
+    <section class="card">
+      <h2>👗 Best Dressed — Female</h2>
+
+      <input
+        id="femaleSearch"
+        class="search"
+        placeholder="🔍 Search a name..."
+        autocomplete="off"
+      >
+
+      <div id="femaleResults" class="results">
+        <div class="loading">
+          Loading names...
+        </div>
+      </div>
+
+      <div id="femaleSelected" class="selectedBox">
+        No one selected yet.
+      </div>
+    </section>
+
+
+    <section class="card">
+      <h2>👔 Best Dressed — Male</h2>
+
+      <input
+        id="maleSearch"
+        class="search"
+        placeholder="🔍 Search a name..."
+        autocomplete="off"
+      >
+
+      <div id="maleResults" class="results">
+        <div class="loading">
+          Loading names...
+        </div>
+      </div>
+
+      <div id="maleSelected" class="selectedBox">
+        No one selected yet.
+      </div>
+    </section>
+
+
+    <button id="submit" class="submit" disabled>
+      SUBMIT VOTE
+    </button>
+
+    <!-- <div class="note">
+      Names are loaded automatically from Google Sheets.
+    </div> -->
+
+  </div>
+
+
+  <!-- =========================
+       SUCCESS MESSAGE
+  ========================= -->
+
+  <div id="success" class="success card">
+    <div class="emoji">🎉</div>
+    <h2>Vote submitted!</h2>
+    <p>Thank you for voting.</p>
+  </div>
+
+
+  <!-- =========================
+       ALREADY VOTED MESSAGE
+  ========================= -->
+
+  <div id="alreadyVoted" class="already-voted card">
+    <div class="emoji">✅</div>
+    <h2>You've already voted!</h2>
+    <p>Each person can vote only once.</p>
+  </div>
+
+</div>
+
+
+<script>
+
+const GOOGLE_SCRIPT_URL =
+"https://script.google.com/macros/s/AKfycbzgQKjONugaGm3clbJasJve-iRnpJQqpXFVEPh5HmynBgDNmuXvcgFQVIA0NA4hCCZC/exec";
+
+
+/* =========================
+   LOCAL STORAGE
+========================= */
+
+const VOTE_STORAGE_KEY =
+"bestDressVoted";
+
+
+/* =========================
+   CHECK IF ALREADY VOTED
+========================= */
+
+function hasAlreadyVoted(){
+
+  return localStorage.getItem(
+    VOTE_STORAGE_KEY
+  ) === "true";
+
+}
+
+
+function showAlreadyVoted(){
+
+  document.getElementById("form").style.display =
+    "none";
+
+  document.getElementById("success").style.display =
+    "none";
+
+  document.getElementById("alreadyVoted").style.display =
+    "block";
+
+}
+
+
+/* =========================
+   STATE
+========================= */
+
+const names = {
+  female: [],
+  male: []
+};
+
+const state = {
+  female: null,
+  male: null
+};
+
+
+/* =========================
+   SETUP SEARCH
+========================= */
+
+function setup(type){
+
+  const search =
+    document.getElementById(type + "Search");
+
+  const results =
+    document.getElementById(type + "Results");
+
+  const selected =
+    document.getElementById(type + "Selected");
+
+
+  function render(){
+
+    const q =
+      search.value.trim().toLowerCase();
+
+
+    const filtered =
+      names[type].filter(name =>
+        name.toLowerCase().includes(q)
+      );
+
+
+    results.innerHTML = "";
+
+
+    if(filtered.length === 0){
+
+      const empty =
+        document.createElement("div");
+
+      empty.className = "empty";
+
+      empty.textContent =
+        "No names found.";
+
+      results.appendChild(empty);
+
+      return;
+
+    }
+
+
+    filtered.forEach(name => {
+
+      const button =
+        document.createElement("button");
+
+
+      button.className =
+        "name" +
+        (state[type] === name
+          ? " selected"
+          : "");
+
+
+      button.textContent =
+        name;
+
+
+      button.onclick = () => {
+
+        state[type] =
+          name;
+
+
+        selected.innerHTML =
+          "Selected: <strong>" +
+          name +
+          "</strong>";
+
+
+        render();
+
+
+        document.getElementById("submit").disabled =
+          !(state.female && state.male);
+
+      };
+
+
+      results.appendChild(button);
+
+    });
+
+  }
+
+
+  search.addEventListener(
+    "input",
+    render
+  );
+
+
+  render();
+
+}
+
+
+/* =========================
+   LOAD NAMES
+========================= */
+
+async function loadNames(){
+
+  try{
+
+    const response =
+      await fetch(GOOGLE_SCRIPT_URL);
+
+
+    if(!response.ok){
+
+      throw new Error(
+        "Failed to connect to Google Apps Script."
+      );
+
+    }
+
+
+    const data =
+      await response.json();
+
+
+    if(!data.success){
+
+      throw new Error(
+        data.error ||
+        "Failed to load names."
+      );
+
+    }
+
+
+    names.female =
+      data.femaleNames || [];
+
+
+    names.male =
+      data.maleNames || [];
+
+
+    console.log(
+      "Female names:",
+      names.female
+    );
+
+
+    console.log(
+      "Male names:",
+      names.male
+    );
+
+
+    setup("female");
+    setup("male");
+
+
+  }catch(error){
+
+    console.error(error);
+
+
+    document.getElementById(
+      "femaleResults"
+    ).innerHTML =
+      '<div class="empty">Failed to load names.</div>';
+
+
+    document.getElementById(
+      "maleResults"
+    ).innerHTML =
+      '<div class="empty">Failed to load names.</div>';
+
+
+    alert(
+      "Nama kandidat gagal dimuat. Silakan refresh halaman."
+    );
+
+  }
+
+}
+
+
+/* =========================
+   SUBMIT VOTE
+========================= */
+
+document.getElementById("submit").onclick =
+async () => {
+
+  const submitBtn =
+    document.getElementById("submit");
+
+
+  if(!state.female || !state.male){
+    return;
+  }
+
+
+  submitBtn.disabled =
+    true;
+
+
+  submitBtn.textContent =
+    "SUBMITTING...";
+
+
+  try{
+
+    const params =
+      new URLSearchParams({
+
+        femaleVote:
+          state.female,
+
+        maleVote:
+          state.male
+
+      });
+
+
+    const response =
+      await fetch(
+        GOOGLE_SCRIPT_URL,
+        {
+          method:"POST",
+          body:params
+        }
+      );
+
+
+    const result =
+      await response.json();
+
+
+    if(!result.success){
+
+      throw new Error(
+        result.error ||
+        "Vote failed."
+      );
+
+    }
+
+
+    /* =========================
+       SAVE VOTE STATUS
+    ========================= */
+
+    localStorage.setItem(
+      VOTE_STORAGE_KEY,
+      "true"
+    );
+
+
+    /* =========================
+       SHOW SUCCESS
+    ========================= */
+
+    document.getElementById(
+      "form"
+    ).style.display =
+      "none";
+
+
+    document.getElementById(
+      "success"
+    ).style.display =
+      "block";
+
+
+  }catch(error){
+
+    console.error(error);
+
+
+    alert(
+      "Vote gagal dikirim. Silakan coba lagi."
+    );
+
+
+    submitBtn.disabled =
+      false;
+
+
+    submitBtn.textContent =
+      "SUBMIT VOTE";
+
+  }
+
+};
+
+
+/* =========================
+   START
+========================= */
+
+if(hasAlreadyVoted()){
+
+  showAlreadyVoted();
+
+}else{
+
+  loadNames();
+
+}
+
+</script>
+
+</body>
+</html>
